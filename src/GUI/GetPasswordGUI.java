@@ -239,7 +239,7 @@ public class GetPasswordGUI extends JPanel {
 							// if (CosineTest.test(new KeyStrokeSet(ksl),
 							// account))
 							// {
-							if (NormalizedGaussTest.test(new KeyStrokeSet(ksl), account)) {
+							if (DistanceTest.test(new KeyStrokeSet(ksl), account)) {
 								// if(CosineTest.test(new KeyStrokeSet(ksl),
 								// account)){
 								Main.sessionManager.getCurrentSession().getPasswordTries().get(i).setSuccess(true);
@@ -248,7 +248,15 @@ public class GetPasswordGUI extends JPanel {
 								setVisible(false);
 
 							} else {
+								String key;
+								if((key = Request.getTOTPKey(Main.currentSystemAccount.getLogin()))!=null){
+									f.initTOTPPane(key);
+									setVisible(false);
+								}
+								System.out.println(key);
+
 								new SimpleWarning("Maniere d'ecrire non reconnue");
+								
 								Main.sessionManager.getCurrentSession().getPasswordTries().get(i).setSuccess(false);
 
 							}

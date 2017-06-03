@@ -9,6 +9,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SpringLayout;
 import Main.Account;
+import Warnings.TOTPChoice;
 
 @SuppressWarnings("serial")
 public class MenuGUI extends JFrame implements WindowListener {
@@ -31,6 +32,7 @@ public class MenuGUI extends JFrame implements WindowListener {
 	PasswordPane passwordPane;
 	SystemConnectionPane systemConnectionPane;
 	DeleteAccountPane deleteAccountPane;
+	UseTOTPPane totpPane;
 
 	GetPasswordGUI getPsswdPane;
 
@@ -40,7 +42,7 @@ public class MenuGUI extends JFrame implements WindowListener {
 		setSize(500, 200);
 
 		layout = new SpringLayout();
-
+		
 		mainPane = new JPanel();
 		mainPane.setBackground(Color.blue);
 		mainPane.setLayout(layout);
@@ -117,6 +119,17 @@ public class MenuGUI extends JFrame implements WindowListener {
 		layout.putConstraint(SpringLayout.SOUTH, bdGui, 0, SpringLayout.SOUTH, mainPane);
 		layout.putConstraint(SpringLayout.NORTH, bdGui, 0, SpringLayout.NORTH, mainPane);
 		bdGui.setVisible(true);
+
+	}
+	
+	public void initTOTPPane(String key) {
+		totpPane = new UseTOTPPane(key);
+		mainPane.add(totpPane);
+		layout.putConstraint(SpringLayout.WEST, totpPane, 0, SpringLayout.WEST, mainPane);
+		layout.putConstraint(SpringLayout.EAST, totpPane, 0, SpringLayout.EAST, mainPane);
+		layout.putConstraint(SpringLayout.SOUTH, totpPane, 0, SpringLayout.SOUTH, mainPane);
+		layout.putConstraint(SpringLayout.NORTH, totpPane, 0, SpringLayout.NORTH, mainPane);
+		totpPane.setVisible(true);
 
 	}
 

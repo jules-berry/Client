@@ -176,5 +176,26 @@ public class Request {
 		}
 		return false;
 	}
+	
+	public static String getTOTPKey(String Account){
+		String query = "Select TOTPKey From CompteSystem Where Login = ? Limit 1;";
+		String key = null;
+		Connection conn = Main.conn;
+		
+		try {
+			PreparedStatement st = conn.prepareStatement(query);
+			st.setString(1, Account);
+			
+			ResultSet rs = st.executeQuery();
+			while(rs.next()){
+				key = rs.getString(1);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return key;
+
+	}
 
 }
