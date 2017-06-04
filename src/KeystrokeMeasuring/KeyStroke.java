@@ -10,8 +10,8 @@ import Main.Account;
 
 public class KeyStroke extends Key {
 
-	private double pressure;
-	private int modifierSequence;
+	private double pressure = 0;
+	private int modifierSequence = 0;
 	private char c;
 	private Modifier shift, ctrl, alt, capsLock;
 	private KeyStroke next;
@@ -21,6 +21,13 @@ public class KeyStroke extends Key {
 		super(timeUp, timeDown);
 		this.setC(c);
 		this.setNext(null);
+		if (timeUp > 0) {
+			this.setShift(new Modifier());
+			this.setCtrl(new Modifier());
+			this.setAlt(new Modifier());
+			this.setCapsLock(new Modifier());
+		}
+		
 	}
 
 	public KeyStroke(ArrayList<String> encryptedValues, Account account)
@@ -32,31 +39,33 @@ public class KeyStroke extends Key {
 		setPressure(Encryption.decryptValue(encryptedValues.get(2), account.getPasswordAsString()));
 		setModifierSequence(Encryption.decryptInt(encryptedValues.get(3), account.getPasswordAsString()));
 		long tempDown = Encryption.decryptLong(encryptedValues.get(5), account.getPasswordAsString());
-		if (tempDown >= 0) {
+		if (tempDown > 0) {
 			setShift(new Modifier(Encryption.decryptLong(encryptedValues.get(4), account.getPasswordAsString()),
 					tempDown, Encryption.decryptInt(encryptedValues.get(6), account.getPasswordAsString())));
 		} else
-			setShift(null);
+			setShift(new Modifier());
 		tempDown = Encryption.decryptLong(encryptedValues.get(8), account.getPasswordAsString());
-		if (tempDown >= 0) {
+		if (tempDown > 0) {
 			setCtrl(new Modifier(Encryption.decryptLong(encryptedValues.get(7), account.getPasswordAsString()),
 					tempDown, Encryption.decryptInt(encryptedValues.get(9), account.getPasswordAsString())));
 		} else
-			setCtrl(null);
+			setCtrl(new Modifier());
 		tempDown = Encryption.decryptLong(encryptedValues.get(11), account.getPasswordAsString());
-		if (tempDown >= 0) {
+		if (tempDown > 0) {
 			setAlt(new Modifier(Encryption.decryptLong(encryptedValues.get(10), account.getPasswordAsString()),
 					tempDown, Encryption.decryptInt(encryptedValues.get(12), account.getPasswordAsString())));
 		} else
-			setAlt(null);
+			setAlt(new Modifier());
 		tempDown = Encryption.decryptLong(encryptedValues.get(14), account.getPasswordAsString());
-		if (tempDown >= 0) {
+		if (tempDown > 0) {
 			setCapsLock(new Modifier(Encryption.decryptLong(encryptedValues.get(13), account.getPasswordAsString()),
 					tempDown));
 		} else
-			setCapsLock(null);
-
+			setCapsLock(new Modifier());
+		
 	}
+	
+	
 
 	/**
 	 * Constructeur si on utilise des donnees traitees pour creer le KeyStroke
@@ -209,12 +218,6 @@ public class KeyStroke extends Key {
 	 * @return La similarite cosinus
 	 */
 	public double getCosineSimilarity(KeyStroke ref) {
-		if (this.getNorme2() == 0) {
-			System.out.println("this nulle");
-		}
-		if (this.getNorme2() == 0) {
-			System.out.println("ref nulle");
-		}
 		if (this.getNorme2() != 0 && this.getNorme2() != 0)
 			return this.getScalarProduct(ref) / (this.getNorme2() * ref.getNorme2());
 		else
@@ -235,15 +238,21 @@ public class KeyStroke extends Key {
 		ArrayList<String> encryptedValues = super.getEncryptedValues(p);
 		encryptedValues.add(Encryption.encryptValue(pressure, p));
 		encryptedValues.add(Encryption.encryptInt(modifierSequence, p));
-		if (shift != null)
-			encryptedValues.addAll(shift.getEncryptedValues(p));
-		if (ctrl != null)
-			encryptedValues.addAll(ctrl.getEncryptedValues(p));
-		if (alt != null)
-			encryptedValues.addAll(alt.getEncryptedValues(p));
-		if (capsLock != null)
-			encryptedValues.addAll(capsLock.getEncryptedValues(p));
-		return encryptedValues;
+		encryptedValues.addAll(shift.getEncryptedValues(p));
+		encryptedValues.addAll(ctrl.getEncryptedValues(p));
+		encryptedValues.addAll(alt.getEncryptedValues(p));
+		encryptedValues.addAll(capsLock.getEncryptedValues(p));
+		return new ArrayList<String>(encryptedValues);
+	}
+	
+	public void print(){
+		super.print();
+		System.out.print(pressure + "|" + modifierSequence + "|");
+		shift.print();
+		ctrl.print();
+		alt.print();
+		capsLock.print();
+		System.out.println("");
 	}
 
 	public double getPressure() {

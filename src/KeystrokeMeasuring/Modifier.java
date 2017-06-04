@@ -20,6 +20,12 @@ public class Modifier extends Key {
 		this.location = location;
 	}
 
+	public Modifier() {
+		super(0, 0);
+		this.location = 0;
+		this.associatedKeyStroke = new KeyStroke('щ', 0, 0);
+	}
+
 	/**
 	 * Constructeur pour CapsLock
 	 * 
@@ -34,14 +40,22 @@ public class Modifier extends Key {
 	@Override
 	public ArrayList<String> getEncryptedValues(String p) {
 		ArrayList<String> encryptedValues = super.getEncryptedValues(p);
-		if (location != 0)
-			encryptedValues.add(Encryption.encryptInt(location, p));
-		return encryptedValues;
+		encryptedValues.add(Encryption.encryptInt(location, p));
+		return new ArrayList<String>(encryptedValues);
+	}
+	
+	public void print(){
+		super.print();
+		System.out.print(location + "|");
 	}
 
 	@Override
 	public long getReleasePressTimes() {
-		return this.getTimeUp() - this.getAssociatedKeyStroke().getTimeUp();
+		if (this.getPressReleaseTimes() != 0) {
+			return this.getTimeUp() - this.getAssociatedKeyStroke().getTimeUp();
+		} else {
+			return 0;
+		}
 	}
 
 	public int getLocation() {

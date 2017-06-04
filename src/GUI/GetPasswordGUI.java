@@ -7,7 +7,8 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.ArrayList;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.util.LinkedList;
 
 import javax.swing.JButton;
@@ -17,10 +18,8 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 
-import Analyse.CosineTest;
 import Analyse.DistanceTest;
 import Analyse.KeyStrokeSet;
-import Analyse.NormalizedGaussTest;
 import Database.Request;
 import Exception.BadLoginException;
 import GUIElements.CancelButton;
@@ -32,7 +31,7 @@ import Main.PasswordGetter;
 import Warnings.SimpleWarning;
 
 @SuppressWarnings("serial")
-public class GetPasswordGUI extends JPanel {
+public class GetPasswordGUI extends JPanel  {
 
 	private JLabel domainLabel;
 	private JLabel idLabel;
@@ -50,6 +49,8 @@ public class GetPasswordGUI extends JPanel {
 	private MenuGUI f;
 
 	private String password;
+
+	private boolean premiereEntree = true;
 
 	public GetPasswordGUI(JPanel menuPane, final MenuGUI f) {
 		password = "";
@@ -87,14 +88,11 @@ public class GetPasswordGUI extends JPanel {
 		timingManager = new TimingManager(psswdField);
 		psswdField.addKeyListener(timingManager);
 
-		System.out.println(Thread.currentThread());
-
 		psswdField.addKeyListener(new KeyListener() {
 
 			@Override
 			public void keyPressed(KeyEvent arg0) {
 
-				System.out.println(new String(psswdField.getPassword()));
 				if (arg0.getKeyCode() == KeyEvent.VK_BACK_SPACE || arg0.getKeyCode() == KeyEvent.VK_DELETE) {
 					psswdField.setText("");
 					timingManager.getAccount().setPassword(new String());
@@ -105,7 +103,7 @@ public class GetPasswordGUI extends JPanel {
 					} catch (BadLoginException e) {
 						// TODO Auto-generated catch block
 					}
-					timingManager.getAccount().setPassword(new String());
+					// timingManager.getAccount().setPassword(new String());
 					// TODO fixer le nettoyage du password
 				}
 
@@ -119,9 +117,18 @@ public class GetPasswordGUI extends JPanel {
 
 			@Override
 			public void keyTyped(KeyEvent arg0) {
-				timingManager.getAccount()
-						.setPassword(timingManager.getAccount().getPasswordAsString() + arg0.getKeyChar());
+				if ((int) arg0.getKeyChar() != 10) {
+					String entree = new String();
+					if (premiereEntree) {
+						entree = String.valueOf(arg0.getKeyChar());
+					} else {
+						entree = timingManager.getAccount().getPasswordAsString();
+						entree += arg0.getKeyChar();
 
+					}
+					timingManager.getAccount().setPassword(entree);
+					premiereEntree = false;
+				}
 			}
 
 		});
@@ -131,7 +138,7 @@ public class GetPasswordGUI extends JPanel {
 			@Override
 			public void focusGained(FocusEvent arg0) {
 				// TODO Auto-generated method stub
-				timingManager.setAccount(new Account(idField.getText(), domainField.getText(), ""));
+				timingManager.setAccount(new Account(idField.getText(), domainField.getText(), new String()));
 
 			}
 
@@ -186,7 +193,6 @@ public class GetPasswordGUI extends JPanel {
 		layout.putConstraint(SpringLayout.WEST, cancel, 10, SpringLayout.HORIZONTAL_CENTER, this);
 		layout.putConstraint(SpringLayout.EAST, cancel, -10, SpringLayout.EAST, this);
 
-		// setVisible(false);
 	}
 
 	private void tryConnection() throws BadLoginException {
@@ -195,7 +201,6 @@ public class GetPasswordGUI extends JPanel {
 		timingManager.build();
 
 		LinkedList<KeyStroke> ksl = new LinkedList<KeyStroke>(timingManager.getKeyStrokes());
-		System.out.println("ksl :" + ksl.size());
 		String login = idField.getText();
 		if (login.endsWith(" ")) {
 			int i = login.length() - 1;
@@ -224,16 +229,16 @@ public class GetPasswordGUI extends JPanel {
 				if (i >= 0) {
 					try {
 						if (ksl.size() > 0) {
-							// if (CosineTest.test(new KeyStrokeSet(ksl),
-							// account))
-							// {
-							if (NormalizedGaussTest.test(new KeyStrokeSet(ksl), account)) {
+							if (DistanceTest.test(new KeyStrokeSet(ksl), account)) {
+								// if (NormalizedGaussTest.test(new
+								// KeyStrokeSet(ksl), account)) {
 								// if(CosineTest.test(new KeyStrokeSet(ksl),
 								// account)){
 								Main.sessionManager.getCurrentSession().getPasswordTries().get(i).setSuccess(true);
 								Main.sessionManager.newSession();
 								f.showPasswordPane(PasswordGetter.getPassword(account));
 								setVisible(false);
+								close();
 
 							} else {
 								new SimpleWarning("Maniere d'ecrire non reconnue");
@@ -249,7 +254,7 @@ public class GetPasswordGUI extends JPanel {
 				} else
 					System.err.println("PasswordTries null");
 			} else {
-				psswdField.setText("");
+				psswdField.setText(new String());
 				timingManager.getKeyStrokes().clear();
 				timingManager.getStrokes().clear();
 				throw new BadLoginException();
@@ -258,9 +263,11 @@ public class GetPasswordGUI extends JPanel {
 			new SimpleWarning("L'un des champs est trop court");
 		}
 
-		psswdField.setText("");
+		psswdField.setText(new String());
 		timingManager.getKeyStrokes().clear();
 		timingManager.getStrokes().clear();
+		timingManager.getAccount().setPassword(new String());
+		premiereEntree = true;
 	}
 
 	public JTextField getDomainField() {

@@ -49,6 +49,8 @@ public class DeleteAccountPane extends JPanel {
 
 	private String password;
 
+	private boolean premiereEntree = true;
+
 	public DeleteAccountPane(JPanel menuPane, final MenuGUI f) {
 		password = "";
 		this.f = f;
@@ -88,35 +90,43 @@ public class DeleteAccountPane extends JPanel {
 		System.out.println(Thread.currentThread());
 
 		psswdField.addKeyListener(new KeyListener() {
-
 			@Override
 			public void keyPressed(KeyEvent arg0) {
 
 				System.out.println(new String(psswdField.getPassword()));
 				if (arg0.getKeyCode() == KeyEvent.VK_BACK_SPACE || arg0.getKeyCode() == KeyEvent.VK_DELETE) {
 					psswdField.setText("");
-					timingManager.getAccount().setPassword(new String(""));
+					timingManager.getAccount().setPassword(new String());
 
 				} else if (arg0.getKeyCode() == KeyEvent.VK_ENTER) {
 					try {
 						tryConnection();
 					} catch (BadLoginException e) {
-						// TODO Auto-generated catch block
 					}
+
 				}
 
 			}
 
 			@Override
 			public void keyReleased(KeyEvent arg0) {
-				// TODO Auto-generated method stub
-
 			}
 
 			@Override
 			public void keyTyped(KeyEvent arg0) {
-				timingManager.getAccount()
-						.setPassword(timingManager.getAccount().getPasswordAsString() + arg0.getKeyChar());
+				if ((int) arg0.getKeyChar() != 10) {
+					System.out.println("new char : " + arg0.getKeyChar() + "|" + (int) (arg0.getKeyChar()));
+					String entree = new String();
+					if (premiereEntree) {
+						entree = String.valueOf(arg0.getKeyChar());
+					} else {
+						entree = timingManager.getAccount().getPasswordAsString();
+						entree += arg0.getKeyChar();
+
+					}
+					timingManager.getAccount().setPassword(entree);
+					premiereEntree = false;
+				}
 			}
 
 		});
@@ -181,7 +191,6 @@ public class DeleteAccountPane extends JPanel {
 		layout.putConstraint(SpringLayout.WEST, cancel, 10, SpringLayout.HORIZONTAL_CENTER, this);
 		layout.putConstraint(SpringLayout.EAST, cancel, -10, SpringLayout.EAST, this);
 
-		// setVisible(false);
 	}
 
 	private void tryConnection() throws BadLoginException {
@@ -213,14 +222,12 @@ public class DeleteAccountPane extends JPanel {
 			System.out.println(password);
 			Main.sessionManager.getCurrentSession().setAccount(account);
 			System.out.println("PasswordTry ajouté");
-			// timingManager.getStrokes().clear();
-			// timingManager.getKeyStrokes().clear();
 			if (Request.checkIfAccountExists(account, Main.conn)) {
 				int i = Main.sessionManager.getCurrentSession().getPasswordTries().size() - 1;
-				try {
+				//try {
 					// if(DistanceTest.test(new KeyStrokeSet(ksl), account)){
 					if (ksl.size() > 0 && i >= 0) {
-						if (DistanceTest.test(new KeyStrokeSet(ksl), account)) {
+						//if (DistanceTest.test(new KeyStrokeSet(ksl), account)) {
 							// if(CosineTest.test(new KeyStrokeSet(ksl),
 							// account)){
 							Main.sessionManager.getCurrentSession().getPasswordTries().get(i).setSuccess(true);
@@ -228,18 +235,18 @@ public class DeleteAccountPane extends JPanel {
 							deleteAccount(account);
 							f.menuPane.setVisible(true);
 							this.setVisible(false);
+							this.close();
 
-						} else {
+						/*} else {
 							new SimpleWarning("Maniere d'ecrire non reconnue");
 							Main.sessionManager.getCurrentSession().getPasswordTries().get(i).setSuccess(false);
 
 						}
 					}
 				} catch (BadLoginException e) {
-					// TODO Auto-generated catch block
 					System.out.println(
 							account.getLogin() + "|" + account.getDomain() + "|" + account.getPasswordAsString());
-				}
+				}*/}
 			} else {
 				psswdField.setText("");
 				timingManager.getKeyStrokes().clear();
@@ -252,6 +259,7 @@ public class DeleteAccountPane extends JPanel {
 		psswdField.setText("");
 		timingManager.getKeyStrokes().clear();
 		timingManager.getStrokes().clear();
+		premiereEntree = true;
 	}
 
 	private void deleteAccount(Account account) {
