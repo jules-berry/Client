@@ -128,6 +128,7 @@ public class TOTPChoice extends JFrame {
 						e.printStackTrace();
 					}
 					key = new String(kg.getKey());
+					System.out.println(key);
 					keyLabel.setText(kg.getKey());
 					keyPane.setVisible(true);
 					first.setVisible(false);
@@ -153,6 +154,7 @@ public class TOTPChoice extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+
 				KeyGetter kg = new KeyGetter();
 				kg.start();
 				try {
@@ -161,9 +163,12 @@ public class TOTPChoice extends JFrame {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				key = new String(kg.getKey());
+				System.out.println(key);
 				keyLabel.setText(kg.getKey());
 				keyPane.setVisible(true);
 				first.setVisible(false);
+
 			}
 
 		});

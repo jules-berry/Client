@@ -52,6 +52,8 @@ public class GetPasswordGUI extends JPanel {
 	private String password;
 
 	private boolean premiereEntree = true;
+	
+	private Account account;
 
 	public GetPasswordGUI(JPanel menuPane, final MenuGUI f) {
 		password = "";
@@ -227,6 +229,7 @@ public class GetPasswordGUI extends JPanel {
 		if (login.length() > 2 && domain.length() > 2) {
 			password = new String(psswdField.getPassword());
 			Account account = new Account(login, domain, password);
+			this.setAccount(account);
 			Main.sessionManager.getCurrentSession().setAccount(account);
 			// timingManager.getStrokes().clear();
 			// timingManager.getKeyStrokes().clear();
@@ -250,7 +253,7 @@ public class GetPasswordGUI extends JPanel {
 							} else {
 								String key;
 								if((key = Request.getTOTPKey(Main.currentSystemAccount.getLogin()))!=null){
-									f.initTOTPPane(key);
+									f.initUseTOTP(this, key);
 									setVisible(false);
 								}
 								System.out.println(key);
@@ -303,6 +306,14 @@ public class GetPasswordGUI extends JPanel {
 
 	public void close() {
 		timingManager.close();
+	}
+
+	public Account getAccount() {
+		return account;
+	}
+
+	public void setAccount(Account account) {
+		this.account = account;
 	}
 
 }

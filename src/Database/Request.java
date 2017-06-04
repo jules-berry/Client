@@ -184,16 +184,17 @@ public class Request {
 		
 		try {
 			PreparedStatement st = conn.prepareStatement(query);
-			st.setString(1, Account);
+			st.setString(1, String.valueOf(Account.hashCode()));
 			
 			ResultSet rs = st.executeQuery();
-			while(rs.next()){
+			if(rs.first()){
 				key = rs.getString(1);
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		System.out.println("key : " + key + " for login : " + Account);
 		return key;
 
 	}

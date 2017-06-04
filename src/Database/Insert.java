@@ -245,7 +245,7 @@ public class Insert {
 	}
 	
 	public static void addTOTPKey(String key,String account){
-		String query  = "Update CompteSystem, Set TOTPKey = ? where Login = ? ;" ;
+		String query  = "Update CompteSystem Set TOTPKey = ? where Login = ? ;" ;
 		
 		Connection conn = Main.Main.conn;
 		

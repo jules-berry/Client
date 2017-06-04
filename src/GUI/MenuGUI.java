@@ -32,7 +32,9 @@ public class MenuGUI extends JFrame implements WindowListener {
 	PasswordPane passwordPane;
 	SystemConnectionPane systemConnectionPane;
 	DeleteAccountPane deleteAccountPane;
-	UseTOTPPane totpPane;
+	TOTPCodePane totpPane;
+	UseTOTPPane useTOTP;
+	TOTPkeyPane totpKeyPane;
 
 	GetPasswordGUI getPsswdPane;
 
@@ -122,8 +124,8 @@ public class MenuGUI extends JFrame implements WindowListener {
 
 	}
 	
-	public void initTOTPPane(String key) {
-		totpPane = new UseTOTPPane(key);
+	public void initTOTPPane(String key,GetPasswordGUI gpg) {
+		totpPane = new TOTPCodePane(key,gpg,this);
 		mainPane.add(totpPane);
 		layout.putConstraint(SpringLayout.WEST, totpPane, 0, SpringLayout.WEST, mainPane);
 		layout.putConstraint(SpringLayout.EAST, totpPane, 0, SpringLayout.EAST, mainPane);
@@ -131,6 +133,16 @@ public class MenuGUI extends JFrame implements WindowListener {
 		layout.putConstraint(SpringLayout.NORTH, totpPane, 0, SpringLayout.NORTH, mainPane);
 		totpPane.setVisible(true);
 
+	}
+	
+	public void initUseTOTP(GetPasswordGUI gpg,String key){
+		useTOTP = new UseTOTPPane(this,gpg,key);
+		mainPane.add(useTOTP);
+		layout.putConstraint(SpringLayout.WEST, useTOTP, 0, SpringLayout.WEST, mainPane);
+		layout.putConstraint(SpringLayout.EAST, useTOTP, 0, SpringLayout.EAST, mainPane);
+		layout.putConstraint(SpringLayout.SOUTH, useTOTP, 0, SpringLayout.SOUTH, mainPane);
+		layout.putConstraint(SpringLayout.NORTH, useTOTP, 0, SpringLayout.NORTH, mainPane);
+		useTOTP.setVisible(true);
 	}
 
 	public void hideBdGui() {
@@ -173,6 +185,16 @@ public class MenuGUI extends JFrame implements WindowListener {
 		layout.putConstraint(SpringLayout.NORTH, deleteAccountPane, 0, SpringLayout.NORTH, mainPane);
 		deleteAccountPane.setVisible(true);
 		deleteAccountPane.getDomainField().grabFocus();
+	}
+	
+	public void initTOTPKeyPane(String key){
+		totpKeyPane = new TOTPkeyPane(this,key);
+		mainPane.add(totpKeyPane);
+		layout.putConstraint(SpringLayout.WEST, totpKeyPane, 0, SpringLayout.WEST, mainPane);
+		layout.putConstraint(SpringLayout.EAST, totpKeyPane, 0, SpringLayout.EAST, mainPane);
+		layout.putConstraint(SpringLayout.SOUTH, totpKeyPane, 0, SpringLayout.SOUTH, mainPane);
+		layout.putConstraint(SpringLayout.NORTH, totpKeyPane, 0, SpringLayout.NORTH, mainPane);
+		totpKeyPane.setVisible(true);
 	}
 
 	public void showMenuPane() {

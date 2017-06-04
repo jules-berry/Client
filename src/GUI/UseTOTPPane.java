@@ -1,36 +1,52 @@
 package GUI;
 
-import javax.swing.JButton;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 
-public class UseTOTPPane extends JPanel{
-	
-	String key;
+import Database.Request;
 
-	public UseTOTPPane(String key){
-		this.key=key;
+import java.awt.Color;
+import javax.swing.JLabel;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+
+public class UseTOTPPane extends JPanel{
+	public UseTOTPPane(MenuGUI f, GetPasswordGUI passwordPane,String key) {
+		setForeground(Color.WHITE);
+		setBackground(Color.DARK_GRAY);
+		SpringLayout springLayout = new SpringLayout();
+		setLayout(springLayout);
 		
-		JTextField codeField = new JTextField();
+		JLabel lblNewLabel = new JLabel("Voulez-vous utilisez un code TOTP ?");
+		springLayout.putConstraint(SpringLayout.NORTH, lblNewLabel, 10, SpringLayout.NORTH, this);
+		springLayout.putConstraint(SpringLayout.WEST, lblNewLabel, 105, SpringLayout.WEST, this);
+		springLayout.putConstraint(SpringLayout.EAST, lblNewLabel, -80, SpringLayout.EAST, this);
+		lblNewLabel.setForeground(Color.WHITE);
+		add(lblNewLabel);
 		
-		JButton okButton = new JButton();
+		JButton btnOui = new JButton("Oui");
+		springLayout.putConstraint(SpringLayout.NORTH, btnOui, 61, SpringLayout.SOUTH, lblNewLabel);
+		springLayout.putConstraint(SpringLayout.WEST, btnOui, 55, SpringLayout.WEST, this);
+		springLayout.putConstraint(SpringLayout.EAST, btnOui, 164, SpringLayout.WEST, this);
+		btnOui.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				f.initTOTPPane(key,passwordPane);
+				setVisible(false);
+			}
+		});
+		add(btnOui);
 		
-		this.add(codeField);
-		this.add(okButton);
-		
-		SpringLayout layout = new SpringLayout();
-		setLayout(layout);
-		
-		layout.putConstraint(SpringLayout.VERTICAL_CENTER, codeField, 0, SpringLayout.VERTICAL_CENTER, this);
-		layout.putConstraint(SpringLayout.WEST, codeField, 50, SpringLayout.WEST, this);
-		layout.putConstraint(SpringLayout.EAST, codeField, -50, SpringLayout.EAST, this);
-		
-		layout.putConstraint(SpringLayout.VERTICAL_CENTER, okButton, 30, SpringLayout.VERTICAL_CENTER, this);
-		layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, okButton, 30, SpringLayout.HORIZONTAL_CENTER, this);
-		
-		
-	
+		JButton btnNon = new JButton("Non");
+		springLayout.putConstraint(SpringLayout.NORTH, btnNon, 0, SpringLayout.NORTH, btnOui);
+		springLayout.putConstraint(SpringLayout.WEST, btnNon, -158, SpringLayout.EAST, this);
+		springLayout.putConstraint(SpringLayout.EAST, btnNon, -55, SpringLayout.EAST, this);
+		btnNon.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				passwordPane.setVisible(true);
+				setVisible(false);
+			}
+		});
+		add(btnNon);
 	}
-	
 }
