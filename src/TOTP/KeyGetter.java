@@ -8,7 +8,6 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Scanner;
 
-import googleAuth.GoogleAuthenticator;
 
 public class KeyGetter extends Thread{
 	
