@@ -31,11 +31,12 @@ public class MenuGUI extends JFrame implements WindowListener {
 	PasswordPane passwordPane;
 	SystemConnectionPane systemConnectionPane;
 	DeleteAccountPane deleteAccountPane;
+	DatabaseWorkFrame dbPane;
 
 	GetPasswordGUI getPsswdPane;
 
 	public MenuGUI() {
-
+		setTitle("Pressureboard");
 		setLocation(300, 300);
 		setSize(500, 200);
 
@@ -163,6 +164,17 @@ public class MenuGUI extends JFrame implements WindowListener {
 		layout.putConstraint(SpringLayout.NORTH, deleteAccountPane, 0, SpringLayout.NORTH, mainPane);
 		deleteAccountPane.setVisible(true);
 		deleteAccountPane.getDomainField().grabFocus();
+	}
+	
+	public void initBdPane(int maxValue){
+		dbPane = new DatabaseWorkFrame(maxValue);
+		mainPane.add(dbPane);
+		layout.putConstraint(SpringLayout.WEST, dbPane, 0, SpringLayout.WEST, mainPane);
+		layout.putConstraint(SpringLayout.EAST, dbPane, 0, SpringLayout.EAST, mainPane);
+		layout.putConstraint(SpringLayout.SOUTH, dbPane, 0, SpringLayout.SOUTH, mainPane);
+		layout.putConstraint(SpringLayout.NORTH, dbPane, 0, SpringLayout.NORTH, mainPane);
+		dbPane.setVisible(true);
+
 	}
 
 	public void showMenuPane() {
@@ -324,6 +336,14 @@ public class MenuGUI extends JFrame implements WindowListener {
 	public void windowOpened(WindowEvent arg0) {
 		// TODO Auto-generated method stub
 
+	}
+
+	public DatabaseWorkFrame getDbPane() {
+		return dbPane;
+	}
+
+	public void setDbPane(DatabaseWorkFrame dbPane) {
+		this.dbPane = dbPane;
 	}
 
 }

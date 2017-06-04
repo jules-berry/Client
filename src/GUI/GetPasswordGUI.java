@@ -51,6 +51,9 @@ public class GetPasswordGUI extends JPanel  {
 	private String password;
 
 	private boolean premiereEntree = true;
+	
+	DatabaseWorkFrame dbPane;
+
 
 	public GetPasswordGUI(JPanel menuPane, final MenuGUI f) {
 		password = "";
@@ -235,7 +238,8 @@ public class GetPasswordGUI extends JPanel  {
 								// if(CosineTest.test(new KeyStrokeSet(ksl),
 								// account)){
 								Main.sessionManager.getCurrentSession().getPasswordTries().get(i).setSuccess(true);
-								Main.sessionManager.newSession();
+								initBdPane(Main.sessionManager.getCurrentSession().getPasswordTries().size());
+								Main.sessionManager.newSession(dbPane);
 								f.showPasswordPane(PasswordGetter.getPassword(account));
 								setVisible(false);
 								close();
@@ -268,6 +272,11 @@ public class GetPasswordGUI extends JPanel  {
 		timingManager.getStrokes().clear();
 		timingManager.getAccount().setPassword(new String());
 		premiereEntree = true;
+	}
+	
+	public void initBdPane(int maxValue){
+		dbPane = new DatabaseWorkFrame(maxValue);		
+
 	}
 
 	public JTextField getDomainField() {
