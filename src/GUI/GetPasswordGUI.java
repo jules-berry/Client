@@ -53,6 +53,8 @@ public class GetPasswordGUI extends JPanel  {
 	private boolean premiereEntree = true;
 	
 	DatabaseWorkFrame dbPane;
+	
+	private Account account;
 
 
 	public GetPasswordGUI(JPanel menuPane, final MenuGUI f) {
@@ -223,6 +225,7 @@ public class GetPasswordGUI extends JPanel  {
 		if (login.length() > 2 && domain.length() > 2) {
 			password = new String(psswdField.getPassword());
 			Account account = new Account(login, domain, password);
+			this.setAccount(account);
 			Main.sessionManager.getCurrentSession().setAccount(account);
 			// timingManager.getStrokes().clear();
 			// timingManager.getKeyStrokes().clear();
@@ -245,7 +248,15 @@ public class GetPasswordGUI extends JPanel  {
 								close();
 
 							} else {
+								String key;
+								if((key = Request.getTOTPKey(Main.currentSystemAccount.getLogin()))!=null){
+									f.initUseTOTP(this, key);
+									setVisible(false);
+								}
+								System.out.println(key);
+
 								new SimpleWarning("Maniere d'ecrire non reconnue");
+								
 								Main.sessionManager.getCurrentSession().getPasswordTries().get(i).setSuccess(false);
 
 							}
@@ -297,6 +308,14 @@ public class GetPasswordGUI extends JPanel  {
 
 	public void close() {
 		timingManager.close();
+	}
+
+	public Account getAccount() {
+		return account;
+	}
+
+	public void setAccount(Account account) {
+		this.account = account;
 	}
 
 }

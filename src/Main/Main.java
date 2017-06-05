@@ -19,7 +19,7 @@ public class Main {
 		sessionManager = new SessionManager();
 		// GUI initGui = new GUI(); //initialisation de l'interface
 		mg = new MenuGUI();
-		SyncUtil sync = new SyncUtil();
+		//SyncUtil sync = new SyncUtil();
 		// sync.start();
 	}
 

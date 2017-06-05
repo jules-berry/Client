@@ -250,5 +250,33 @@ public class Insert {
 		return "Une erreur s'est produite";
 
 	}
+	
+	public static void addTOTPKey(String key,String account){
+		String query  = "Update CompteSystem Set TOTPKey = ? where Login = ? ;" ;
+		
+		Connection conn = Main.Main.conn;
+		
+		try {
+			Statement begin = conn.createStatement();
+			begin.executeQuery("Start Transaction;");
+			PreparedStatement st = conn.prepareStatement(query);
+			st.setString(1, key);
+			st.setString(2, String.valueOf(account.hashCode()));
+			st.executeUpdate();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Statement commit;
+		try {
+			commit = conn.createStatement();
+			commit.executeQuery("Commit;");
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+}
 
 }
