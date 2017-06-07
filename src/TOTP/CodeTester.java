@@ -15,7 +15,7 @@ public class CodeTester {
 		DataOutputStream os = null;
 		InputStreamReader is = null;
 		try {
-			Socket socket = new Socket("92.222.25.158", 8189);
+			Socket socket = new Socket("217.182.207.5", 8189);
 			os = new DataOutputStream(socket.getOutputStream());
 			is = new InputStreamReader(socket.getInputStream());
 			System.out.println("client done");

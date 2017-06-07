@@ -21,7 +21,7 @@ public class TimingManager implements KeyListener {
 	private final PressionManager pm;
 	private Thread pressureThread;
 
-	private boolean arduinoConnected = true;
+	private boolean arduinoConnected;
 
 	// Tableau de toutes les touches (modifiers ou caracteres)
 	ArrayList<KeyStrokeListener> strokes;
@@ -37,10 +37,11 @@ public class TimingManager implements KeyListener {
 	public TimingManager(Account account, JPasswordField pf) {
 		this.account = account;
 		this.pf = pf;
+		arduinoConnected = Main.arduinoConnected;
 		strokes = new ArrayList<KeyStrokeListener>(2 * account.getPasswordAsString().length());
 		keyStrokes = new ArrayList<KeyStroke>(account.getPasswordAsString().length());
 		t = Toolkit.getDefaultToolkit();
-		pm = new PressionManager(this);
+		pm = new PressionManager(this,Main.vcpChannel);
 		pressureThread = new Thread(pm);
 		if (arduinoConnected) {
 			pressureThread.start();
@@ -53,7 +54,7 @@ public class TimingManager implements KeyListener {
 		strokes = new ArrayList<KeyStrokeListener>(16);
 		keyStrokes = new ArrayList<KeyStroke>(16);
 		t = Toolkit.getDefaultToolkit();
-		pm = new PressionManager(this);
+		pm = new PressionManager(this,Main.vcpChannel);
 		pressureThread = new Thread(pm);
 		if (arduinoConnected) {
 			pressureThread.start();
@@ -102,6 +103,7 @@ public class TimingManager implements KeyListener {
 	}
 
 	public synchronized void build() {
+		System.out.println(arduinoConnected);
 		if (arduinoConnected) {
 			pm.setEnd(true);
 			pressureThread.interrupt();

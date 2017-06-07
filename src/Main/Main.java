@@ -1,25 +1,55 @@
 package Main;
 
+import java.io.IOException;
 import java.sql.Connection;
 
+import Arduino.ArduinoUsbChannel;
 import Database.ConnectionBD;
 import GUI.MenuGUI;
 import Session.SessionManager;
-import Sync.SyncUtil;
+import jssc.SerialPortException;
 
 public class Main {
 
 	public static SessionManager sessionManager;
 	public static SystemAccount currentSystemAccount;
 	public static Connection conn;
-	public static MenuGUI mg ;
+	public static MenuGUI mg;
+	public static ArduinoUsbChannel vcpChannel;
+	public static boolean arduinoConnected = true;
 
 	public static void main(String[] args) throws InterruptedException {
 		conn = ConnectionBD.connect();
+		String port = null;
+
+		// Recherche du port de l'Arduino
+
+		System.err.println("RECHERCHE d'un port disponible...");
+		port = ArduinoUsbChannel.getOneComPort();
+		// TODO mettre la methode de recherche de port dans TimingManager
+		if (port != null) {
+			try {
+				vcpChannel = new ArduinoUsbChannel(port);
+			} catch (IOException e) {
+				e.printStackTrace(System.err);
+			}
+		} else {
+			arduinoConnected = false;
+			System.out.println("Impossible de se connecter au module de mesure de pressions, poursuite du programme "
+					+ "sans mesure de pressions");
+		}
+		if (arduinoConnected) {
+			try {
+				vcpChannel.open();
+			} catch (SerialPortException | IOException e1) {
+				System.exit(-1);
+			}
+		}
+
 		sessionManager = new SessionManager();
 		// GUI initGui = new GUI(); //initialisation de l'interface
 		mg = new MenuGUI();
-		//SyncUtil sync = new SyncUtil();
+		// SyncUtil sync = new SyncUtil();
 		// sync.start();
 	}
 

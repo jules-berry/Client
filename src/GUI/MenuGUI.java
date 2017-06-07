@@ -1,6 +1,8 @@
 package GUI;
 
 import java.awt.Color;
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
@@ -43,6 +45,7 @@ public class MenuGUI extends JFrame implements WindowListener {
 		setTitle("Pressureboard");
 		setLocation(300, 300);
 		setSize(500, 200);
+		this.setIconImage(Toolkit.getDefaultToolkit().getImage("icon.png"));
 
 		layout = new SpringLayout();
 

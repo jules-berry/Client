@@ -36,7 +36,7 @@ public class DistanceTest {
 				Iterator<KeyStroke> tempIter = tempSet.getSet().iterator();
 				Iterator<KeyStroke> testIter = testSet.getSet().iterator();
 				int j = 0;
-				while (testIter.hasNext()) {
+				while (testIter.hasNext() && tempIter.hasNext()) {
 					KeyStroke testStroke = testIter.next();
 					KeyStroke refStroke = tempIter.next();
 					if (testStroke.getNorme2() != 0 && i < euclidianDistances.length

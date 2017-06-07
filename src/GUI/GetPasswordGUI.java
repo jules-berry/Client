@@ -55,6 +55,8 @@ public class GetPasswordGUI extends JPanel  {
 	DatabaseWorkFrame dbPane;
 	
 	private Account account;
+	
+	private JLabel tryAgain;
 
 
 	public GetPasswordGUI(JPanel menuPane, final MenuGUI f) {
@@ -168,6 +170,11 @@ public class GetPasswordGUI extends JPanel  {
 
 		});
 		this.add(getPsswd);
+		
+		tryAgain = new JLabel("Essayez de nouveau");
+		tryAgain.setForeground(Color.red);
+		this.add(tryAgain);
+		tryAgain.setVisible(false);
 
 		layout.putConstraint(SpringLayout.NORTH, domainLabel, 10, SpringLayout.NORTH, this);
 		layout.putConstraint(SpringLayout.WEST, domainLabel, 10, SpringLayout.WEST, this);
@@ -197,6 +204,9 @@ public class GetPasswordGUI extends JPanel  {
 		layout.putConstraint(SpringLayout.SOUTH, cancel, -10, SpringLayout.SOUTH, this);
 		layout.putConstraint(SpringLayout.WEST, cancel, 10, SpringLayout.HORIZONTAL_CENTER, this);
 		layout.putConstraint(SpringLayout.EAST, cancel, -10, SpringLayout.EAST, this);
+		
+		layout.putConstraint(SpringLayout.NORTH, tryAgain, 20, SpringLayout.SOUTH, psswdLabel);
+		layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, tryAgain, 0, SpringLayout.HORIZONTAL_CENTER, this);
 
 	}
 
@@ -268,6 +278,7 @@ public class GetPasswordGUI extends JPanel  {
 					}
 				} else
 					System.err.println("PasswordTries null");
+					tryAgain.setVisible(true);
 			} else {
 				psswdField.setText(new String());
 				timingManager.getKeyStrokes().clear();

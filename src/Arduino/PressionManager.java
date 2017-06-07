@@ -25,8 +25,8 @@ public class PressionManager implements Runnable {
 	private boolean wait;
 	private boolean connected;
 
-	public PressionManager(TimingManager tm) {
-
+	public PressionManager(TimingManager tm, ArduinoUsbChannel vcpChannel) {
+		this.vcpChannel = vcpChannel;
 		setStop(false);
 		setEnd(false);
 		setTriee(false);
@@ -34,43 +34,18 @@ public class PressionManager implements Runnable {
 
 		this.tm = tm;
 
-		String port = null;
-
-		// Recherche du port de l'Arduino
-
-		System.err.println("RECHERCHE d'un port disponible...");
-		port = ArduinoUsbChannel.getOneComPort();
-		// TODO mettre la methode de recherche de port dans TimingManager
-		if (port != null) {
-			try {
-				vcpChannel = new ArduinoUsbChannel(port);
-			} catch (IOException e) {
-				e.printStackTrace(System.err);
-			}
-		} else {
-			System.out.println("Impossible de se connecter au module de mesure de pressions, poursuite du programme "
-					+ "sans mesure de pressions");
-			tm.setArduinoConnected(false);
-			this.setEnd(true);
-		}
 	}
 
 	@Override
 	public void run() {
 
-		try {
-			vcpChannel.open();
-		} catch (SerialPortException | IOException e1) {
-			System.exit(-1);
-		}
-
 		tabMesures = new LinkedList<Mesure>(); // mesures
 												// brutes de
 												// pression
-
-		vcpInput = new BufferedReader(new InputStreamReader(vcpChannel.getReader()));
-
-		while (!stop && tm.isArduinoConnected()) {
+		if (vcpChannel != null) {
+			vcpInput = new BufferedReader(new InputStreamReader(vcpChannel.getReader()));
+		}
+		while (!stop && tm.isArduinoConnected() && Main.Main.arduinoConnected) {
 
 			try {
 
@@ -124,15 +99,15 @@ public class PressionManager implements Runnable {
 			} catch (IOException e) {
 				e.printStackTrace(System.err);
 			}
-
+			try {
+				vcpInput.close();
+				vcpChannel.close();
+			} catch (IOException | NullPointerException e) {
+				System.out.println("PressionManager closing");
+			}
 		}
 
-		try {
-			vcpInput.close();
-			vcpChannel.close();
-		} catch (IOException | NullPointerException e) {
-			System.out.println("PressionManager closing");
-		}
+		
 
 	}
 
